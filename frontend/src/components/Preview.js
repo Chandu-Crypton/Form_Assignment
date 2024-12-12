@@ -5,7 +5,7 @@ const Preview = ({ title, headerImage, questions }) => {
     <div className="bg-gray-100 p-4 rounded mt-4">
       <h2 className="text-xl font-bold mb-4">{title}</h2>
 
-      {/* Header Image */}
+
       {headerImage && (
         <img
           src={URL.createObjectURL(headerImage)}
@@ -14,13 +14,13 @@ const Preview = ({ title, headerImage, questions }) => {
         />
       )}
 
-      {/* Questions */}
+
       {questions.map((question, index) => (
         <div key={index} className="mb-4">
-          {/* Question Label */}
+
           <label className="block font-bold mb-2">{question.label}</label>
 
-          {/* Display Uploaded Image */}
+
           {question.image && (
             <img
               src={URL.createObjectURL(question.image)}
@@ -29,7 +29,7 @@ const Preview = ({ title, headerImage, questions }) => {
             />
           )}
 
-          {/* Render Question Type */}
+
           {question.type === "text" && (
             <input
               type="text"

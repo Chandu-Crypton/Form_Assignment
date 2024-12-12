@@ -60,7 +60,7 @@ const Question = ({ index, question, onRemove, onUpdate }) => {
         </button>
       </div>
 
-      {/* Label Input */}
+
       <input
         type="text"
         placeholder="Enter question label"
@@ -69,7 +69,7 @@ const Question = ({ index, question, onRemove, onUpdate }) => {
         onChange={handleLabelChange}
       />
 
-      {/* Image Upload */}
+
       <div className="mb-4">
         <label className="block font-bold mb-2">Upload an Image (Optional):</label>
         <input
@@ -87,7 +87,7 @@ const Question = ({ index, question, onRemove, onUpdate }) => {
         )}
       </div>
 
-      {/* Options for Checkbox */}
+
       {question.type === "checkbox" && (
         <div className="mb-2">
           <label className="block font-bold mb-2">Options:</label>
@@ -111,7 +111,7 @@ const Question = ({ index, question, onRemove, onUpdate }) => {
         </div>
       )}
 
-      {/* Grid Questions */}
+
       {question.type === "grid" && (
         <div>
           <label className="block font-bold mb-2">Grid Rows:</label>
