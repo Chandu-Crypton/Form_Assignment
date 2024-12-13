@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import Question from "./Question";
 import Preview from "./Preview";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FormEditor = () => {
   const [title, setTitle] = useState("");
   const [headerImage, setHeaderImage] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [isPreview, setIsPreview] = useState(false);
-
+  const navigate = useNavigate();
   const handleAddQuestion = () => {
     setQuestions([...questions, { type: "text", label: "", options: [] }]);
   };
@@ -26,8 +27,10 @@ const FormEditor = () => {
       formData.append("headerImage", headerImage);
 
       formData.append("questions", JSON.stringify(questions));
-      await axios.post("http://localhost:5000/api/forms/save", formData);
+      const response = await axios.post("http://localhost:5000/api/forms/save", formData);
+      const formId = response.data._id;
       alert("Form saved successfully!");
+      navigate(`/form/${formId}`);
       console.log({
         title,
         headerImage,
