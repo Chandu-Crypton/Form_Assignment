@@ -1,38 +1,47 @@
-const express = require("express");
+const express = require('express');
+const multer = require('multer'); // For handling file uploads
+const Form = require('../models/Form'); // Import the Form model
 const router = express.Router();
-const FormResponse = require("../models/FormResponse");
-const FormSubmission = require("../models/FormSubmission");
-const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const Response = require("../models/Response");
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Save files in 'uploads' folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Generate unique filenames
+  },
+});
+const upload = multer({ storage });
 
-router.get("/", (req, res) => {
-    res.json("Hello")
-})
-router.post("/save", upload.single("headerImage"), async (req, res) => {
-    try {
-        const { title, questions } = req.body;
-        const headerImage = req.file ? req.file.buffer.toString("base64") : null;
+router.post('/save', upload.single('headerImage'), async (req, res) => {
+  try {
+    const { title, questions } = req.body;
 
-        const parsedQuestions = JSON.parse(questions); // Parse questions array from JSON
+    
+    const newForm = new Form({
+      title,
+      headerImage: req.file ? req.file.path : null, 
+      questions: JSON.parse(questions), 
+    });
 
-        const newForm = new FormResponse({
-            title,
-            headerImage,
-            questions: parsedQuestions,
-        });
+   
+    const savedForm = await newForm.save();
 
-        const savedForm = await newForm.save();
-        res.status(200).json(savedForm);
-    } catch (error) {
-        console.error("Error saving form:", error);
-        res.status(500).json({ error: "Failed to save form", details: error });
-    }
+    res.status(201).json({
+      message: 'Form saved successfully!',
+      formId: savedForm._id,
+    });
+  } catch (error) {
+    console.error('Error saving form:', error);
+    res.status(500).json({ error: 'Failed to save the form.' });
+  }
 });
 
 router.get("/form/:formId", async (req, res) => {
     try {
-        const form = await FormResponse.findById(req.params.formId);
+        console.log("Form ID:", req.params.formId);
+        const form = await Form.findById(req.params.formId);
         if (!form) {
             return res.status(404).json({ message: "Form not found" });
         }
@@ -44,23 +53,25 @@ router.get("/form/:formId", async (req, res) => {
 });
 
 
-router.post("/form/:formId/response", async (req, res) => {
+
+router.post("/:formId/responses", async (req, res) => {
+    const { responses } = req.body;
+  
     try {
-        const { responses } = req.body;
-
-
-        const newResponse = new FormSubmission({
-            formId: req.params.formId,
-            responses,
-        });
-
-        const savedResponse = await newResponse.save();
-        res.status(201).json(savedResponse);
+      const form = await Form.findById(req.params.formId);
+      if (!form) {
+        return res.status(404).json({ message: "Form not found" });
+      }
+  
+      const newResponse = new Response({
+        formId: req.params.formId,
+        responses,
+      });
+  
+      await newResponse.save();
+      res.status(201).json({ message: "Responses saved successfully!" });
     } catch (error) {
-        console.error("Error saving response:", error);
-        res.status(500).json({ error: "Failed to save response" });
+      res.status(500).json({ error: error.message });
     }
-});
-
-
+  });
 module.exports = router;

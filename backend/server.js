@@ -6,13 +6,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 
-app.use(cors(
-    {
-        origin: [""],
-        methods: ["POST", 'GET'],
-        credentials: true
-    }
-));
+app.use(cors());
 app.use(bodyParser.json());
 
 
@@ -29,7 +23,7 @@ const formRoutes = require("./routes/formRoutes");
 app.use("/api/forms", formRoutes);
 
 
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

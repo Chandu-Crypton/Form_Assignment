@@ -1,8 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import FormEditor from "./components/FormEditor";
-import FillForm from "./components/FillForm";
+import FormPreview from "./components/FormPreview"
 import './index.css';
+import FormSubmitted from "./components/FormSubmitted";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
           <Route path="/" element={<FormEditor />} />
 
 
-          <Route path="/form/:formId" element={<FillForm />} />
+          <Route path="/form/:formId" element={<FormPreview />} />
+          <Route path="/form/submitted" element={<FormSubmitted />} />
         </Routes>
       </div>
     </Router>
